@@ -1,50 +1,50 @@
 const startButton$$ = document.querySelector("button")
 const moleDivs$$ = document.querySelectorAll(".mole");
 let scoreSpan = document.querySelector(".score");
+const holes = document.querySelectorAll('.hole');
 
-
-let lasthole = null;
+let lastHole;
 let score = 0;
+let timeUp = false;
 
-startButton$$.addEventListener('click', () => startGame);
+startButton$$.addEventListener('click',() => startGame());
 
 function startGame() {
-const randomTimeInterval = setInterval(randomTimeMole , 500);
-addMoleListeners();
-finishCount();
+scoreSpan.textContent = 0;
+timeUp = false;
+score = 0;
+showMole();
+setTimeout(() => timeUp = true, 20000)
+}
 
-const randomTimeMole = () => {
-    for (const moleDiv$$ of moleDivs$$) {
-        moleDiv$$.classList.remove('hole');
+function randomTime(min, max) {
+    return Math.round(Math.random() * (max - min) + min);
     }
 
+const randomTimeMole = (holes) => {
     const randomMole = Math.floor(Math.random() * 6);
-    let position = moleDivs$$[randomMole];
-    position.classList.add('hole');
-    lasthole = randomMole;
+    let position = holes[randomMole];
+    if (position === lastHole) {
+        return randomTimeMole(holes);
+        }
+        lastHole = position;
+        return position;
+        }
+
+const showMole = () => {
+    const time = randomTime(400, 1000);
+    const hole = randomTimeMole(holes);
+    hole.classList.add('up');
+    setTimeout(() => {
+    hole.classList.remove('up');
+    if (!timeUp) showMole();
+    }, time);
 }
 
-const addMoleListeners = () => {
-    for (let index = 0; index < moleDivs$$.length; index++) {
-        const moleDiv$$ = moleDivs$$[index];
-
-        moleDiv$$.addEventListener('click', () =>{
-            if (index === lasthole){
-                score = score +1;
-                scoreSpan.textContent = score
-                lasthole = null
-            }
-        })
-        
+function whack(e) {
+    if(!e.isTrusted) return;
+    score++;
+    this.parentNode.classList.remove('up');
+    scoreSpan.textContent = score;
     }
-}
-
-const finishCount = () => {
-    if (score === 1000) {
-        clearInterval(randomTimeInterval)
-        alert('Your score is' + score)
-    }
-}
-}
-
-
+moleDivs$$.forEach(moleDivs$$ => moleDivs$$.addEventListener('click', whack));
