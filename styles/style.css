@@ -4,7 +4,7 @@ html {
   font-size: 35px;
   background: #98bcf4;
   font-family: Calibri;  
-  background-image: url(/assets/background.jpg);
+  background-image: url(../assets/background.jpg);
   background-size:120%;
   background-repeat: no-repeat;
   background-position: center center;

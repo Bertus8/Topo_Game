@@ -1,33 +1,50 @@
-const gameDiv$$ = document.querySelector(".game");
-const hole1Div$$ = document.querySelector(".hole hole1");
-const hole2Div$$ = document.querySelector(".hole hole2");
-const hole3Div$$ = document.querySelector(".hole hole3");
-const hole4Div$$ = document.querySelector(".hole hole4");
-const hole5Div$$ = document.querySelector(".hole hole5");
-const hole6Div$$ = document.querySelector(".hole hole6");
-
+const startButton$$ = document.querySelector("button")
 const moleDivs$$ = document.querySelectorAll(".mole");
-const scoreSpan = document.querySelector(".score");
+let scoreSpan = document.querySelector(".score");
 
 
 let lasthole = null;
-let timeGame = true;
 let score = 0;
 
-const randomTimeMoleInterval = setInterval(randomTimeMole,500);
+startButton$$.addEventListener('click', () => startGame);
 
+function startGame() {
+const randomTimeInterval = setInterval(randomTimeMole , 500);
+addMoleListeners();
+finishCount();
 
 const randomTimeMole = () => {
-for (const moleDiv$$ of moleDivs$$) {
-    moleDiv$$.classList.remove('mole')
+    for (const moleDiv$$ of moleDivs$$) {
+        moleDiv$$.classList.remove('hole');
+    }
+
+    const randomMole = Math.floor(Math.random() * 6);
+    let position = moleDivs$$[randomMole];
+    position.classList.add('hole');
+    lasthole = randomMole;
 }
 
- const randomMole = Math.floor(Math.random() * 6);
- let position = moleDivs$$[randomMole]
- position.classList.add('mole')
- lasthole = randomMole
+const addMoleListeners = () => {
+    for (let index = 0; index < moleDivs$$.length; index++) {
+        const moleDiv$$ = moleDivs$$[index];
+
+        moleDiv$$.addEventListener('click', () =>{
+            if (index === lasthole){
+                score = score +1;
+                scoreSpan.textContent = score
+                lasthole = null
+            }
+        })
+        
+    }
 }
 
-
+const finishCount = () => {
+    if (score === 1000) {
+        clearInterval(randomTimeInterval)
+        alert('Your score is' + score)
+    }
+}
+}
 
 
